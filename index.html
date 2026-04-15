@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Medical Cannabis Prescribing Suite — Curaleaf Formulary April 2026</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#f7f6f2;
+  --surface:#ffffff;
+  --surface2:#f2f1ed;
+  --border:rgba(0,0,0,0.1);
+  --border2:rgba(0,0,0,0.18);
+  --text:#1c1c1a;
+  --text2:#6a6a67;
+  --text3:#999894;
+  --purple:#3c3489;--purple-l:#eeedfe;--purple-m:#afa9ec;
+  --teal:#0f6e56;--teal-l:#e1f5ee;
+  --green:#3b6d11;--green-l:#eaf3de;--green-m:#c0dd97;
+  --amber:#854f0b;--amber-l:#faeeda;--amber-m:#fac775;
+  --red:#a32d2d;--red-l:#fcebeb;--red-m:#f09595;
+  --gray-l:#f1efe8;--gray:#5f5e5a;
+  --r4:4px;--r8:8px;--r12:12px;--r20:20px;
+}
+body{font-family:'Georgia',serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:15px;line-height:1.6;}
+a{color:var(--purple);}
+
+/* ── Top bar ── */
+.topbar{background:var(--purple);padding:0;display:flex;align-items:stretch;}
+.topbar-inner{display:flex;align-items:center;justify-content:space-between;width:100%;max-width:1000px;margin:0 auto;padding:0 1.5rem;}
+.topbar-brand{padding:14px 0;color:white;}
+.topbar-brand h1{font-size:15px;font-weight:normal;letter-spacing:0.02em;font-family:'Georgia',serif;}
+.topbar-brand p{font-size:11px;opacity:.65;margin-top:1px;font-family:system-ui,sans-serif;}
+.topbar-badge{font-size:11px;background:rgba(255,255,255,0.15);color:white;padding:4px 12px;border-radius:20px;font-family:system-ui,sans-serif;white-space:nowrap;}
+
+/* ── Tab switcher ── */
+.tab-bar{background:var(--surface);border-bottom:1px solid var(--border);display:flex;max-width:1000px;margin:0 auto;padding:0 1.5rem;}
+.tab{padding:14px 20px;font-size:13px;cursor:pointer;border-bottom:2px solid transparent;color:var(--text2);font-family:system-ui,sans-serif;transition:all .15s;white-space:nowrap;}
+.tab:hover{color:var(--text);}
+.tab.active{color:var(--purple);border-bottom-color:var(--purple);font-weight:500;}
+.tab-badge{display:inline-block;background:var(--purple-l);color:var(--purple);font-size:10px;padding:2px 7px;border-radius:10px;margin-left:6px;font-weight:500;}
+.tab-badge.green{background:var(--green-l);color:var(--green);}
+
+.page{display:none;max-width:1000px;margin:0 auto;padding:2rem 1.5rem 4rem;}
+.page.on{display:block;}
+
+/* ── Progress bar ── */
+.prog{display:flex;border-radius:var(--r8);overflow:hidden;border:1px solid var(--border);margin-bottom:2rem;background:var(--surface);}
+.ps{flex:1;padding:11px 8px;text-align:center;font-size:12px;color:var(--text2);background:var(--surface2);cursor:pointer;border-right:1px solid var(--border);transition:background .15s;font-family:system-ui,sans-serif;}
+.ps:last-child{border-right:none;}
+.ps.active{background:var(--purple-l);color:var(--purple);font-weight:600;}
+.ps.done{background:var(--green-l);color:var(--green);}
+
+/* ── Card ── */
+.card{background:var(--surface);border-radius:var(--r12);border:1px solid var(--border);padding:1.75rem;margin-bottom:1.5rem;}
+.sec{display:none;}
+.sec.on{display:block;}
+.stitle{font-size:18px;font-weight:normal;margin-bottom:1.5rem;padding-bottom:.75rem;border-bottom:1px solid var(--border);font-family:'Georgia',serif;}
+
+/* ── Form elements ── */
+.fl{margin-bottom:1.1rem;}
+.fl label{font-size:13px;color:var(--text2);margin-bottom:5px;display:block;font-family:system-ui,sans-serif;}
+.fl label strong{color:var(--text);}
+select,input[type=text],input[type=number],textarea{
+  width:100%;padding:9px 12px;border:1px solid var(--border2);border-radius:var(--r8);
+  font-size:14px;background:var(--surface);color:var(--text);font-family:system-ui,sans-serif;
+  transition:border-color .15s,box-shadow .15s;
+}
+select:focus,input:focus,textarea:focus{outline:none;border-color:var(--purple-m);box-shadow:0 0 0 3px var(--purple-l);}
+textarea{resize:vertical;min-height:72px;line-height:1.5;}
+.g2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;}
+@media(max-width:600px){.g2,.g3{grid-template-columns:1fr;}}
+
+/* ── Buttons ── */
+.brow{display:flex;justify-content:flex-end;gap:10px;margin-top:2rem;flex-wrap:wrap;}
+button{padding:10px 24px;border-radius:var(--r8);font-size:13px;font-weight:500;cursor:pointer;border:1px solid var(--border2);background:transparent;color:var(--text);font-family:system-ui,sans-serif;transition:all .12s;letter-spacing:0.01em;}
+button:hover{background:var(--surface2);}
+.bp{background:var(--purple);color:white;border-color:var(--purple);}
+.bp:hover{background:#26215c;border-color:#26215c;}
+.bo{border-color:var(--purple-m);color:var(--purple);}
+.bo:hover{background:var(--purple-l);}
+
+/* ── Alerts ── */
+.al{padding:12px 16px;border-radius:var(--r8);font-size:13px;margin-bottom:1rem;line-height:1.6;border-left:3px solid;font-family:system-ui,sans-serif;}
+.al-w{background:var(--amber-l);color:var(--amber);border-color:var(--amber-m);}
+.al-d{background:var(--red-l);color:var(--red);border-color:var(--red-m);}
+.al-i{background:var(--purple-l);color:var(--purple);border-color:var(--purple-m);}
+.al-s{background:var(--green-l);color:var(--green);border-color:var(--green-m);}
+
+/* ── Badges ── */
+.badge{font-size:11px;padding:3px 10px;border-radius:12px;font-weight:600;white-space:nowrap;display:inline-block;font-family:system-ui,sans-serif;}
+.b-purple{background:var(--purple-l);color:var(--purple);}
+.b-teal{background:var(--teal-l);color:var(--teal);}
+.b-green{background:var(--green-l);color:var(--green);}
+.b-amber{background:var(--amber-l);color:var(--amber);}
+.b-red{background:var(--red-l);color:var(--red);}
+.b-gray{background:var(--gray-l);color:var(--gray);}
+
+/* ── Chips ── */
+.chip-g{display:flex;flex-wrap:wrap;gap:7px;margin-top:5px;}
+.chip{padding:5px 13px;border-radius:20px;border:1px solid var(--border2);font-size:13px;cursor:pointer;background:var(--surface2);color:var(--text2);user-select:none;transition:all .12s;font-family:system-ui,sans-serif;}
+.chip:hover{border-color:var(--purple-m);}
+.chip.on{background:var(--purple-l);color:var(--purple);border-color:var(--purple-m);font-weight:500;}
+.chip.don.on{background:var(--red-l);color:var(--red);border-color:var(--red-m);}
+.chip.won.on{background:var(--amber-l);color:var(--amber);border-color:var(--amber-m);}
+
+/* ── Product cards ── */
+.prod-card{border:1px solid var(--border);border-radius:var(--r12);padding:1.1rem 1.25rem;margin-bottom:12px;background:var(--surface);}
+.prod-card.rec{border:2px solid var(--purple-m);}
+.prod-hdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;flex-wrap:wrap;gap:8px;}
+.prod-name{font-size:14px;font-weight:600;font-family:system-ui,sans-serif;}
+.prod-brand{font-size:12px;color:var(--text2);margin-top:1px;font-family:system-ui,sans-serif;}
+.prod-meta{font-size:12px;color:var(--text2);display:flex;gap:16px;flex-wrap:wrap;margin-bottom:6px;font-family:system-ui,sans-serif;}
+.terp-row{font-size:12px;color:var(--text2);margin-top:8px;padding-top:8px;border-top:1px solid var(--border);line-height:1.8;font-family:system-ui,sans-serif;}
+.terp-pill{display:inline-block;background:var(--teal-l);color:var(--teal);border-radius:10px;padding:2px 9px;font-size:11px;margin-right:4px;font-weight:600;}
+.rat-box{background:var(--surface2);border-radius:var(--r8);padding:10px 14px;margin-top:10px;font-size:13px;color:var(--text2);line-height:1.7;font-family:system-ui,sans-serif;}
+.stock-in{color:var(--green);font-size:11px;font-weight:600;font-family:system-ui,sans-serif;}
+.stock-low{color:var(--amber);font-size:11px;font-weight:600;font-family:system-ui,sans-serif;}
+.stock-out{color:var(--red);font-size:11px;font-weight:600;font-family:system-ui,sans-serif;}
+
+/* ── Tables ── */
+.dtable{width:100%;border-collapse:collapse;font-size:13px;margin-top:12px;font-family:system-ui,sans-serif;}
+.dtable th{text-align:left;font-weight:600;color:var(--text2);font-size:12px;padding:8px 10px;border-bottom:1px solid var(--border);background:var(--surface2);}
+.dtable td{padding:10px 10px;border-bottom:1px solid var(--border);vertical-align:top;}
+.dtable tr:last-child td{border-bottom:none;}
+
+/* ── Summary cards ── */
+.sum-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:1.25rem;}
+.sum-item{background:var(--surface2);border-radius:var(--r8);padding:10px 14px;}
+.sum-label{font-size:12px;color:var(--text2);margin-bottom:3px;font-family:system-ui,sans-serif;}
+.sum-val{font-size:14px;font-weight:600;font-family:system-ui,sans-serif;}
+
+/* ── Score rows ── */
+.score-row{display:flex;align-items:center;gap:12px;margin-bottom:12px;padding:12px 14px;border:1px solid var(--border);border-radius:var(--r8);background:var(--surface);flex-wrap:wrap;}
+.score-label{flex:0 0 190px;font-size:13px;font-weight:500;font-family:system-ui,sans-serif;}
+.score-sub{font-size:11px;color:var(--text2);font-weight:400;display:block;margin-top:1px;}
+.score-inputs{display:flex;gap:6px;flex:0 0 auto;}
+.score-inputs>div>div{font-size:11px;color:var(--text2);text-align:center;margin-bottom:3px;font-family:system-ui,sans-serif;}
+.score-inputs input{width:72px;text-align:center;}
+.score-inputs select{width:180px;}
+.sc-badge{flex:0 0 130px;font-size:12px;padding:5px 10px;border-radius:12px;text-align:center;font-weight:500;font-family:system-ui,sans-serif;}
+.sc-g{background:var(--green-l);color:var(--green);}
+.sc-a{background:var(--amber-l);color:var(--amber);}
+.sc-r{background:var(--red-l);color:var(--red);}
+.sc-n{background:var(--gray-l);color:var(--gray);}
+.score-hint{flex:1;min-width:160px;font-size:12px;color:var(--text2);line-height:1.5;font-family:system-ui,sans-serif;}
+
+/* ── Verdict box ── */
+.vbox{border-radius:var(--r12);padding:1.25rem;margin-bottom:1.25rem;border:2px solid;}
+.vb-green{background:var(--green-l);border-color:var(--green-m);}
+.vb-amber{background:var(--amber-l);border-color:var(--amber-m);}
+.vb-red{background:var(--red-l);border-color:var(--red-m);}
+.vb-title{font-size:16px;font-weight:500;margin-bottom:6px;font-family:system-ui,sans-serif;}
+.vb-green .vb-title{color:#27500a;}
+.vb-amber .vb-title{color:#633806;}
+.vb-red .vb-title{color:#791f1f;}
+.vb-body{font-size:13px;line-height:1.7;font-family:system-ui,sans-serif;}
+.vb-green .vb-body{color:var(--green);}
+.vb-amber .vb-body{color:var(--amber);}
+.vb-red .vb-body{color:var(--red);}
+
+/* ── Doc rows ── */
+.doc-row{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;color:var(--text2);font-family:system-ui,sans-serif;}
+.doc-row:last-child{border-bottom:none;}
+.doc-row input[type=checkbox]{width:15px;height:15px;flex-shrink:0;margin-top:2px;accent-color:var(--purple);}
+.rf-item{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;font-family:system-ui,sans-serif;}
+.rf-item:last-child{border-bottom:none;}
+.rf-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px;}
+.dot-r{background:#e24b4a;}
+.dot-a{background:#ef9f27;}
+.dot-g{background:#639922;}
+.int-item{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;font-family:system-ui,sans-serif;}
+.int-item:last-child{border-bottom:none;}
+
+.divider{border:none;border-top:1px solid var(--border);margin:1.25rem 0;}
+.metric-g{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:1.25rem;}
+.mc{background:var(--surface2);border-radius:var(--r8);padding:12px 14px;text-align:center;}
+.mc-label{font-size:11px;color:var(--text2);margin-bottom:4px;font-family:system-ui,sans-serif;}
+.mc-val{font-size:22px;font-weight:600;font-family:system-ui,sans-serif;}
+.mc-val.red{color:var(--red);}
+.mc-val.amber{color:var(--amber);}
+.mc-val.green{color:var(--green);}
+.doc-block{background:var(--surface2);border-radius:var(--r8);padding:12px 16px;font-size:13px;line-height:1.7;margin-bottom:10px;color:var(--text2);font-family:system-ui,sans-serif;}
+.ev-block{background:var(--surface2);border-radius:var(--r8);padding:12px 16px;margin-bottom:1.25rem;font-family:system-ui,sans-serif;}
+.disclaimer{font-size:12px;color:var(--text2);line-height:1.7;padding:14px 16px;border:1px solid var(--border);border-radius:var(--r8);background:var(--surface2);font-family:system-ui,sans-serif;}
+.footer{text-align:center;font-size:12px;color:var(--text3);margin-top:2rem;padding-top:1rem;border-top:1px solid var(--border);font-family:system-ui,sans-serif;}
+
+@media print{
+  .topbar{background:var(--purple)!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  .tab-bar,.brow,.prog{display:none!important;}
+  .sec{display:block!important;}
+  .page{display:block!important;}
+  body{background:white;}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="topbar-brand">
+      <h1>Medical Cannabis Prescribing Suite</h1>
+      <p>Curaleaf Laboratories Formulary — April 2026 &nbsp;·&nbsp; MHRA No: MS 41467</p>
+    </div>
+    <span class="topbar-badge">Specialist prescribers only &nbsp;·&nbsp; Schedule 2 MDR 2001</span>
+  </div>
+</div>
+
+<div style="background:var(--surface);border-bottom:1px solid var(--border);">
+  <div class="tab-bar">
+    <div class="tab active" id="tab1" onclick="switchTab(1)">
+      New prescription
+      <span class="tab-badge">Specialist</span>
+    </div>
+    <div class="tab" id="tab2" onclick="switchTab(2)">
+      Repeat review
+      <span class="tab-badge green">Shared care</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     PAGE 1 — SPECIALIST INITIATION TOOL
+═══════════════════════════════════════════════ -->
+<div class="page on" id="page1">
+
+  <div class="prog">
+    <div class="ps active" id="A1" onclick="goA(1)">1. Patient</div>
+    <div class="ps" id="A2" onclick="goA(2)">2. Indication</div>
+    <div class="ps" id="A3" onclick="goA(3)">3. Medications</div>
+    <div class="ps" id="A4" onclick="goA(4)">4. Recommendation</div>
+  </div>
+
+  <!-- A1 -->
+  <div class="sec on card" id="A-s1">
+    <div class="stitle">Patient assessment</div>
+    <div class="al al-i">For specialist prescribers only. All prescriptions must comply with UK Schedule 2 regulations (MDR 2001). Products from the Curaleaf Laboratories April 2026 formulary.</div>
+    <div class="g2">
+      <div class="fl"><label>Age</label><input type="number" id="A-age" placeholder="e.g. 42" min="18" max="120"></div>
+      <div class="fl"><label>Biological sex</label>
+        <select id="A-sex"><option value="">Select...</option><option>Male</option><option>Female</option><option>Other / prefer not to say</option></select></div>
+    </div>
+    <div class="fl"><label>Prior cannabis exposure</label>
+      <select id="A-exp"><option value="">Select...</option><option>Naive (no prior use)</option><option>Occasional recreational use</option><option>Regular recreational use</option><option>Prior medicinal cannabis</option></select></div>
+    <div class="fl"><label>Contraindications / cautions — select all that apply</label>
+      <div class="chip-g">
+        <div class="chip don" onclick="togA(this,'c')" data-val="psychosis">Personal/family Hx psychosis</div>
+        <div class="chip don" onclick="togA(this,'c')" data-val="pregnancy">Pregnant / breastfeeding</div>
+        <div class="chip don" onclick="togA(this,'c')" data-val="under18">Under 18</div>
+        <div class="chip won" onclick="togA(this,'c')" data-val="cvd">Cardiovascular disease</div>
+        <div class="chip won" onclick="togA(this,'c')" data-val="hepatic">Severe hepatic impairment</div>
+        <div class="chip won" onclick="togA(this,'c')" data-val="dependence">Substance dependence Hx</div>
+        <div class="chip won" onclick="togA(this,'c')" data-val="bipolar">Bipolar disorder</div>
+        <div class="chip won" onclick="togA(this,'c')" data-val="driving">Regular driver / HGV</div>
+      </div>
+    </div>
+    <div id="A-ca"></div>
+    <div class="brow"><button class="bp" onclick="goA(2)">Next: Indication →</button></div>
+  </div>
+
+  <!-- A2 -->
+  <div class="sec card" id="A-s2">
+    <div class="stitle">Clinical indication</div>
+    <div class="fl"><label>Primary indication</label>
+      <select id="A-ind" onchange="aEv()">
+        <option value="">Select indication...</option>
+        <optgroup label="Pain conditions">
+          <option value="pain_neuropathic">Chronic neuropathic pain</option>
+          <option value="pain_cancer">Cancer-related pain</option>
+          <option value="fibromyalgia">Fibromyalgia</option>
+          <option value="pain_endo">Endometriosis-associated pain</option>
+          <option value="pain_msk">Musculoskeletal / arthritis pain</option>
+        </optgroup>
+        <optgroup label="Neurological">
+          <option value="spasticity">MS-related spasticity</option>
+          <option value="epilepsy">Treatment-resistant epilepsy</option>
+          <option value="migraine">Chronic migraine / headache</option>
+        </optgroup>
+        <optgroup label="Oncology / palliative">
+          <option value="nausea">Chemotherapy-induced nausea/vomiting</option>
+          <option value="appetite">Cancer cachexia / appetite loss</option>
+        </optgroup>
+        <optgroup label="Mental health / sleep">
+          <option value="anxiety">Anxiety disorders</option>
+          <option value="ptsd">PTSD</option>
+          <option value="sleep">Insomnia / sleep disorders</option>
+        </optgroup>
+        <optgroup label="Gynaecological / hormonal">
+          <option value="menopause">Menopausal symptoms</option>
+          <option value="endometriosis">Endometriosis</option>
+          <option value="pms">PMDD / severe PMS</option>
+        </optgroup>
+        <optgroup label="Gastrointestinal">
+          <option value="ibd">IBD / Crohn's disease</option>
+          <option value="ibs">IBS / functional bowel disorder</option>
+        </optgroup>
+      </select>
+    </div>
+    <div id="A-ev"></div>
+    <div class="fl"><label>Previous treatments tried (document for NICE compliance)</label>
+      <textarea id="A-prev" placeholder="e.g. Pregabalin 300mg (intolerant), Duloxetine 60mg (inadequate response)..."></textarea></div>
+    <div class="fl"><label>Patient goals</label>
+      <textarea id="A-goals" placeholder="e.g. Pain NRS 8/10, disrupted sleep. Goal: reduce pain, improve function..."></textarea></div>
+    <div class="fl"><label>Preferred route of administration</label>
+      <div class="chip-g" id="A-routes">
+        <div class="chip on" onclick="togRoute(this)" data-val="oral">Oral oil / capsule</div>
+        <div class="chip" onclick="togRoute(this)" data-val="vape">Vaporisation (flower)</div>
+        <div class="chip" onclick="togRoute(this)" data-val="liquid_vape">Liquid vape (QUE)</div>
+        <div class="chip" onclick="togRoute(this)" data-val="pastille">Pastille / sublingual</div>
+      </div>
+    </div>
+    <div class="brow">
+      <button onclick="goA(1)">← Back</button>
+      <button class="bp" onclick="goA(3)">Next: Medications →</button>
+    </div>
+  </div>
+
+  <!-- A3 -->
+  <div class="sec card" id="A-s3">
+    <div class="stitle">Current medications &amp; interactions</div>
+    <div class="fl"><label>Current medications — select all that apply</label>
+      <div class="chip-g">
+        <div class="chip" onclick="togA(this,'m')" data-val="warfarin">Warfarin / anticoagulants</div>
+        <div class="chip" onclick="togA(this,'m')" data-val="ssri">SSRIs / SNRIs</div>
+        <div class="chip" onclick="togA(this,'m')" data-val="benzo">Benzodiazepines</div>
+        <div class="chip" onclick="togA(this,'m')" data-val="opioids">Opioids</div>
+        <div class="chip" onclick="togA(this,'m')" data-val="aeds">Antiepileptics (AEDs)</div>
+        <div class="chip" onclick="togA(this,'m')" data-val="antipsych">Antipsychotics</div>
+        <div class="chip" onclick="togA(this,'m')" data-val="statins">Statins</div>
+        <div class="chip" onclick="togA(this,'m')" data-val="immunosup">Immunosuppressants</div>
+        <div class="chip" onclick="togA(this,'m')" data-val="metformin">Metformin / hypoglycaemics</div>
+        <div class="chip" onclick="togA(this,'m')" data-val="beta">Beta-blockers</div>
+        <div class="chip" onclick="togA(this,'m')" data-val="hrt">HRT / hormone therapy</div>
+        <div class="chip" onclick="togA(this,'m')" data-val="tamoxifen">Tamoxifen / aromatase inhibitors</div>
+      </div>
+    </div>
+    <div id="A-ip"></div>
+    <div class="fl" style="margin-top:1rem;"><label>Additional medications (free text)</label>
+      <input type="text" id="A-othmed" placeholder="e.g. Omeprazole 20mg, Levothyroxine 50mcg..."></div>
+    <div class="brow">
+      <button onclick="goA(2)">← Back</button>
+      <button class="bp" onclick="buildA();goA(4)">Generate recommendation →</button>
+    </div>
+  </div>
+
+  <!-- A4 -->
+  <div class="sec card" id="A-s4">
+    <div class="stitle">Prescribing recommendation</div>
+    <div id="A-rec"></div>
+    <div class="brow">
+      <button onclick="goA(3)">← Back</button>
+      <button class="bo" onclick="window.print()">Print / save PDF</button>
+      <button class="bp" onclick="resetA()">New patient</button>
+    </div>
+  </div>
+
+  <div class="footer">Curaleaf Laboratories · Unit 7, Rivergreen Industrial Estate, Sunderland SR4 6AD · MHRA No: MS 41467 · 0191 743 1007</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     PAGE 2 — REPEAT PRESCRIBER TOOL
+═══════════════════════════════════════════════ -->
+<div class="page" id="page2">
+
+  <div class="prog">
+    <div class="ps active" id="B1" onclick="goB(1)">1. Patient details</div>
+    <div class="ps" id="B2" onclick="goB(2)">2. Outcome scores</div>
+    <div class="ps" id="B3" onclick="goB(3)">3. Safety review</div>
+    <div class="ps" id="B4" onclick="goB(4)">4. Decision</div>
+  </div>
+
+  <!-- B1 -->
+  <div class="sec on card" id="B-s1">
+    <div class="stitle">Patient &amp; prescription details</div>
+    <div class="al al-i">This tool guides shared care prescribers through the repeat review process. It does not replace clinical judgement. If in doubt, refer back to the initiating specialist.</div>
+    <div class="g2">
+      <div class="fl"><label>Patient name / ID</label><input type="text" id="B-name" placeholder="Patient name or clinic ID"></div>
+      <div class="fl"><label>Date of review</label><input type="text" id="B-date" placeholder="e.g. 15 April 2026"></div>
+    </div>
+    <div class="g2">
+      <div class="fl"><label>Prescriber name</label><input type="text" id="B-presc" placeholder="Your name"></div>
+      <div class="fl"><label>Prescriber role</label>
+        <select id="B-role"><option value="">Select...</option><option>GP</option><option>GPwSI (cannabis)</option><option>Nurse prescriber / ANP</option><option>Pharmacist prescriber</option></select></div>
+    </div>
+    <div class="g2">
+      <div class="fl"><label>Indication</label>
+        <select id="B-ind">
+          <option value="">Select...</option>
+          <optgroup label="Pain"><option>Chronic neuropathic pain</option><option>Cancer-related pain</option><option>Fibromyalgia</option><option>Endometriosis-associated pain</option><option>Musculoskeletal pain</option></optgroup>
+          <optgroup label="Neurological / other"><option>MS-related spasticity</option><option>Treatment-resistant epilepsy</option><option>CINV</option><option>Insomnia / sleep disorder</option><option>Anxiety disorder</option><option>PTSD</option><option>Chronic migraine</option></optgroup>
+          <optgroup label="Gynaecological"><option>Menopause</option><option>Endometriosis</option><option>PMDD / severe PMS</option></optgroup>
+        </select>
+      </div>
+      <div class="fl"><label>Duration of treatment</label>
+        <select id="B-dur"><option value="">Select...</option><option>Less than 3 months</option><option>3–6 months</option><option>6–12 months</option><option>Over 12 months</option></select></div>
+    </div>
+    <div class="fl"><label>Current prescription (product, dose, frequency)</label>
+      <input type="text" id="B-rx" placeholder="e.g. Curaleaf Oil 20mg/ml THC 80mg/ml CBD — 0.5ml twice daily"></div>
+    <div class="fl"><label>Initiating specialist</label>
+      <input type="text" id="B-spec" placeholder="e.g. Dr Smith, Cannabis Clinic, last reviewed Jan 2026"></div>
+    <div class="fl"><label>Has the patient been seen by the initiating specialist in the last 6 months?</label>
+      <select id="B-specrev" onchange="bSpecAlert()">
+        <option value="">Select...</option>
+        <option value="yes">Yes</option>
+        <option value="no">No — overdue for specialist review</option>
+        <option value="scheduled">No — specialist review scheduled</option>
+      </select>
+    </div>
+    <div id="B-sa"></div>
+    <div class="brow"><button class="bp" onclick="goB(2)">Next: Outcome scores →</button></div>
+  </div>
+
+  <!-- B2 -->
+  <div class="sec card" id="B-s2">
+    <div class="stitle">Patient-reported outcome measures</div>
+    <div class="al al-i">Enter today's scores and baseline scores where known. Scores are automatically interpreted. Leave blank if not applicable.</div>
+
+    <div class="score-row">
+      <div class="score-label">Pain NRS<span class="score-sub">0 = no pain · 10 = worst</span></div>
+      <div class="score-inputs">
+        <div><div>Baseline</div><input type="number" id="nrs-b" min="0" max="10" placeholder="—" oninput="sc('nrs')"></div>
+        <div><div>Today</div><input type="number" id="nrs-n" min="0" max="10" placeholder="—" oninput="sc('nrs')"></div>
+      </div>
+      <div class="sc-badge sc-n" id="nrs-badge">—</div>
+      <div class="score-hint">Meaningful improvement = ≥2 point reduction and ≥30% reduction from baseline.</div>
+    </div>
+    <div class="score-row">
+      <div class="score-label">PSQI — sleep<span class="score-sub">0–21 · higher = worse · &gt;5 = poor</span></div>
+      <div class="score-inputs">
+        <div><div>Baseline</div><input type="number" id="psqi-b" min="0" max="21" placeholder="—" oninput="sc('psqi')"></div>
+        <div><div>Today</div><input type="number" id="psqi-n" min="0" max="21" placeholder="—" oninput="sc('psqi')"></div>
+      </div>
+      <div class="sc-badge sc-n" id="psqi-badge">—</div>
+      <div class="score-hint">PSQI ≤5 is the normal range. Score >5 persisting at review warrants product or dose review.</div>
+    </div>
+    <div class="score-row">
+      <div class="score-label">GAD-7 — anxiety<span class="score-sub">0–4 minimal · 5–9 mild · 10–14 mod · 15+ severe</span></div>
+      <div class="score-inputs">
+        <div><div>Baseline</div><input type="number" id="gad-b" min="0" max="21" placeholder="—" oninput="sc('gad')"></div>
+        <div><div>Today</div><input type="number" id="gad-n" min="0" max="21" placeholder="—" oninput="sc('gad')"></div>
+      </div>
+      <div class="sc-badge sc-n" id="gad-badge">—</div>
+      <div class="score-hint">Worsening anxiety on cannabis — especially high-THC — is a red flag. Increase ≥5 points = urgent specialist review.</div>
+    </div>
+    <div class="score-row">
+      <div class="score-label">PHQ-9 — mood<span class="score-sub">0–4 minimal · 5–9 mild · 10+ moderate/severe</span></div>
+      <div class="score-inputs">
+        <div><div>Baseline</div><input type="number" id="phq-b" min="0" max="27" placeholder="—" oninput="sc('phq')"></div>
+        <div><div>Today</div><input type="number" id="phq-n" min="0" max="27" placeholder="—" oninput="sc('phq')"></div>
+      </div>
+      <div class="sc-badge sc-n" id="phq-badge">—</div>
+      <div class="score-hint">PHQ-9 ≥10 at review, or worsening by ≥5 points, requires clinical assessment before reauthorising.</div>
+    </div>
+    <div class="score-row">
+      <div class="score-label">PGIC — global impression<span class="score-sub">1 = much better · 4 = no change · 7 = much worse</span></div>
+      <div class="score-inputs">
+        <div><div>&nbsp;</div>
+          <select id="pgic" onchange="sc('pgic')" style="width:200px;">
+            <option value="">—</option>
+            <option value="1">1 — Much better</option>
+            <option value="2">2 — Better</option>
+            <option value="3">3 — Slightly better</option>
+            <option value="4">4 — No change</option>
+            <option value="5">5 — Slightly worse</option>
+            <option value="6">6 — Worse</option>
+            <option value="7">7 — Much worse</option>
+          </select>
+        </div>
+      </div>
+      <div class="sc-badge sc-n" id="pgic-badge">—</div>
+      <div class="score-hint">Score 4 (no change) or worse after adequate trial suggests treatment is not working.</div>
+    </div>
+    <div class="score-row">
+      <div class="score-label">CUDIT-R — misuse screen<span class="score-sub">0–32 · ≥8 hazardous · ≥13 probable dependence</span></div>
+      <div class="score-inputs">
+        <div><div>Score</div><input type="number" id="cudit" min="0" max="32" placeholder="—" oninput="sc('cudit')"></div>
+      </div>
+      <div class="sc-badge sc-n" id="cudit-badge">—</div>
+      <div class="score-hint">Complete annually or if misuse suspected. Score ≥13: do not reauthorise without specialist input.</div>
+    </div>
+
+    <div class="brow">
+      <button onclick="goB(1)">← Back</button>
+      <button class="bp" onclick="goB(3)">Next: Safety review →</button>
+    </div>
+  </div>
+
+  <!-- B3 -->
+  <div class="sec card" id="B-s3">
+    <div class="stitle">Safety &amp; adverse effect review</div>
+    <div class="fl"><label>Adverse effects since last review — select all that apply</label>
+      <div class="chip-g">
+        <div class="chip don" onclick="togB(this,'ae')" data-val="psychosis">New psychotic symptoms</div>
+        <div class="chip don" onclick="togB(this,'ae')" data-val="suicidal">Suicidal ideation</div>
+        <div class="chip don" onclick="togB(this,'ae')" data-val="cvs">Chest pain / palpitations</div>
+        <div class="chip don" onclick="togB(this,'ae')" data-val="seizure">New seizure activity</div>
+        <div class="chip won" onclick="togB(this,'ae')" data-val="mood-worse">Worsening mood / depression</div>
+        <div class="chip won" onclick="togB(this,'ae')" data-val="anxiety-worse">Worsening anxiety</div>
+        <div class="chip won" onclick="togB(this,'ae')" data-val="cog">Cognitive difficulties</div>
+        <div class="chip won" onclick="togB(this,'ae')" data-val="sedation">Excessive daytime sedation</div>
+        <div class="chip won" onclick="togB(this,'ae')" data-val="nausea">Nausea / vomiting</div>
+        <div class="chip won" onclick="togB(this,'ae')" data-val="resp">Respiratory symptoms (if vaping)</div>
+        <div class="chip won" onclick="togB(this,'ae')" data-val="driving">Driving while impaired concern</div>
+        <div class="chip" onclick="togB(this,'ae')" data-val="none">No adverse effects</div>
+      </div>
+    </div>
+    <div id="B-ae"></div>
+
+    <div class="divider"></div>
+    <div style="font-size:14px;font-weight:500;margin-bottom:12px;font-family:system-ui,sans-serif;">Dependence &amp; misuse screening</div>
+    <div class="fl"><label>Has the patient run out of medication early or requested early supply?</label>
+      <select id="B-early" onchange="bMisuse()"><option value="">Select...</option><option value="no">No</option><option value="yes">Yes — ran out early</option><option value="stock">Has unused stock</option></select></div>
+    <div class="fl"><label>Has the patient requested dose increases outside the agreed titration plan?</label>
+      <select id="B-dosereq" onchange="bMisuse()"><option value="">Select...</option><option value="no">No</option><option value="yes">Yes</option></select></div>
+    <div class="fl"><label>Is there evidence of concurrent recreational cannabis use?</label>
+      <select id="B-rec" onchange="bMisuse()"><option value="">Select...</option><option value="no">No</option><option value="yes">Yes — patient disclosed</option><option value="suspected">Suspected but unconfirmed</option></select></div>
+    <div id="B-ma"></div>
+
+    <div class="divider"></div>
+    <div style="font-size:14px;font-weight:500;margin-bottom:12px;font-family:system-ui,sans-serif;">Drug interaction re-check — any new medications since last review?</div>
+    <div class="chip-g">
+      <div class="chip" onclick="togB(this,'int')" data-val="warfarin">Warfarin / anticoagulants</div>
+      <div class="chip" onclick="togB(this,'int')" data-val="ssri">SSRIs / SNRIs</div>
+      <div class="chip" onclick="togB(this,'int')" data-val="benzo">Benzodiazepines</div>
+      <div class="chip" onclick="togB(this,'int')" data-val="opioids">Opioids</div>
+      <div class="chip" onclick="togB(this,'int')" data-val="aeds">Antiepileptics (AEDs)</div>
+      <div class="chip" onclick="togB(this,'int')" data-val="statins">Statins</div>
+      <div class="chip" onclick="togB(this,'int')" data-val="immunosup">Immunosuppressants</div>
+      <div class="chip" onclick="togB(this,'int')" data-val="tamoxifen">Tamoxifen / aromatase inhibitors</div>
+      <div class="chip" onclick="togB(this,'int')" data-val="none">No new medications</div>
+    </div>
+    <div id="B-ip"></div>
+
+    <div class="divider"></div>
+    <div class="fl"><label>Any other clinical concerns</label>
+      <textarea id="B-concerns" placeholder="e.g. Patient reports using cannabis during work hours, new HGV licence application pending..."></textarea></div>
+
+    <div class="brow">
+      <button onclick="goB(2)">← Back</button>
+      <button class="bp" onclick="buildB();goB(4)">Generate decision →</button>
+    </div>
+  </div>
+
+  <!-- B4 -->
+  <div class="sec card" id="B-s4">
+    <div class="stitle">Review decision &amp; documentation</div>
+    <div id="B-dec"></div>
+    <div class="brow">
+      <button onclick="goB(3)">← Back</button>
+      <button class="bo" onclick="window.print()">Print / save PDF</button>
+      <button class="bp" onclick="resetB()">New review</button>
+    </div>
+  </div>
+
+  <div class="footer">Curaleaf Laboratories · Unit 7, Rivergreen Industrial Estate, Sunderland SR4 6AD · MHRA No: MS 41467 · For shared care prescriber use only</div>
+</div>
+
+<script>
+// ── Tab switching ──
+function switchTab(n){
+  document.getElementById('page1').classList.toggle('on',n===1);
+  document.getElementById('page2').classList.toggle('on',n===2);
+  document.getElementById('tab1').classList.toggle('active',n===1);
+  document.getElementById('tab2').classList.toggle('active',n===2);
+}
+
+// ═══════════════════════════════
+// PAGE A — SPECIALIST TOOL DATA
+// ═══════════════════════════════
+let aC=[],aM=[],aR=['oral'];
+
+const EVID={
+  pain_neuropathic:{level:'Moderate',cls:'b-teal',note:'Multiple RCTs support benefit. NICE NG193 recognises use when ≥2 standard treatments have failed.'},
+  pain_cancer:{level:'Moderate',cls:'b-teal',note:'Supported by observational data and some RCTs. Often used adjunctively with opioids to allow dose reduction.'},
+  spasticity:{level:'Strong',cls:'b-green',note:'Nabiximols (Sativex) licensed in UK for MS spasticity. Good RCT evidence. Curaleaf balanced oil if Sativex unavailable.'},
+  nausea:{level:'Strong',cls:'b-green',note:'Nabilone licensed for CINV. Good RCT support. THC-dominant oils or pastilles are practical alternatives.'},
+  epilepsy:{level:'Strong (CBD)',cls:'b-green',note:'Epidyolex (CBD) licensed for Dravet/LGS. Requires specialist neurology input.'},
+  anxiety:{level:'Limited',cls:'b-amber',note:'CBD-dominant products preferred. High-THC preparations may worsen anxiety — avoid.'},
+  ptsd:{level:'Limited',cls:'b-amber',note:'Small trials support benefit for sleep, nightmares, hyperarousal. Balanced THC:CBD or high-CBD preferred.'},
+  sleep:{level:'Limited',cls:'b-amber',note:'Short-term benefit reported. Indica-dominant strains and balanced oils favoured. Tolerance may develop.'},
+  fibromyalgia:{level:'Weak',cls:'b-red',note:'Case series and surveys only. Exhaust all licensed options first.'},
+  pain_endo:{level:'Limited',cls:'b-amber',note:'Emerging observational evidence. CB1/CB2 receptors expressed in endometrial tissue. Beta-caryophyllene terpenes may augment benefit.'},
+  pain_msk:{level:'Limited',cls:'b-amber',note:'Observational data supports use in inflammatory/OA pain. High-CBD products appropriate.'},
+  migraine:{level:'Limited',cls:'b-amber',note:'Retrospective data shows reduction in migraine frequency. Fast-onset routes useful for acute episodes.'},
+  appetite:{level:'Moderate',cls:'b-teal',note:'THC-mediated appetite stimulation well-documented. Start low in frail patients.'},
+  menopause:{level:'Limited',cls:'b-amber',note:'Survey data supports benefit for vasomotor symptoms, sleep, mood. CBD-dominant or balanced products preferred. Use alongside HRT where appropriate.'},
+  endometriosis:{level:'Limited',cls:'b-amber',note:'Endocannabinoid system implicated in pathophysiology. CBD + beta-caryophyllene profiles may reduce neuroinflammation.'},
+  pms:{level:'Weak',cls:'b-red',note:'CBD may modulate 5-HT1A relevant to PMDD. Consider cyclical dosing aligned to luteal phase.'},
+  ibd:{level:'Weak',cls:'b-red',note:'Anecdotal data only. CBD anti-inflammatory properties considered in refractory cases only.'},
+  ibs:{level:'Weak',cls:'b-red',note:'CB1 receptors in enteric nervous system. CBD may reduce visceral hypersensitivity. Last resort only.'}
+};
+
+const INTS={
+  warfarin:{s:'major',d:'Warfarin / anticoagulants',t:'CBD inhibits CYP2C9 — increases warfarin levels. INR monitoring required; dose adjustment likely.'},
+  ssri:{s:'moderate',d:'SSRIs / SNRIs',t:'CBD may inhibit CYP2D6. Additive serotonergic effects. Monitor for serotonin syndrome.'},
+  benzo:{s:'moderate',d:'Benzodiazepines',t:'Additive CNS depression. Risk of excess sedation. Consider dose reduction.'},
+  opioids:{s:'moderate',d:'Opioids',t:'Synergistic analgesia may allow opioid reduction. Additive sedation risk — monitor closely.'},
+  aeds:{s:'major',d:'Antiepileptics (AEDs)',t:'CBD increases clobazam levels significantly. Valproate + CBD raises hepatotoxicity risk. TDM required.'},
+  antipsych:{s:'moderate',d:'Antipsychotics',t:'THC may antagonise antipsychotic effect. Prefer CBD-dominant products.'},
+  statins:{s:'minor',d:'Statins',t:'CBD inhibits CYP3A4 — increased statin exposure. Monitor for myopathy.'},
+  immunosup:{s:'moderate',d:'Immunosuppressants',t:'CBD inhibits CYP3A4 — tacrolimus/ciclosporin toxicity risk. TDM essential.'},
+  metformin:{s:'minor',d:'Metformin / hypoglycaemics',t:'Cannabis may affect blood glucose. Monitor HbA1c.'},
+  beta:{s:'minor',d:'Beta-blockers',t:'THC tachycardia may offset beta-blockade. Use low-THC products preferentially.'},
+  hrt:{s:'minor',d:'HRT / hormone therapy',t:'No major pharmacokinetic interactions. Monitor for additive sedation with progesterone-containing HRT.'},
+  tamoxifen:{s:'moderate',d:'Tamoxifen / aromatase inhibitors',t:'CBD inhibits CYP2D6 — may reduce tamoxifen conversion to active endoxifen. Oncology review essential.'}
+};
+
+const PRODS={
+  pain_neuropathic:{
+    first:[
+      {n:'Curaleaf Oil 20mg/ml THC 80mg/ml CBD',br:'Curaleaf Oils',thc:'20mg/ml',cbd:'80mg/ml',form:'Oral oil',s:'in',p:'£80/10ml · £195/30ml',terps:['Myrcene','Beta-caryophyllene','Linalool'],rat:'High CBD:THC provides analgesic and anti-inflammatory effect with reduced psychoactive burden. Beta-caryophyllene acts as CB2 agonist reducing neuroinflammation. Suitable first-line for cannabis-naive patients.'},
+      {n:'Cura-PWE Flower THC 11% CBD 11%',br:'Curaleaf Dried Flower (Balanced)',thc:'11%',cbd:'11%',form:'Dried flower (vape)',s:'low',p:'£6.90/g · £69/10g',terps:['Myrcene','Beta-caryophyllene','Pinene'],rat:'Balanced 1:1 for patients preferring vaporisation. Faster onset suits breakthrough pain. Note: low stock.'}
+    ],
+    second:[
+      {n:'Curaleaf Oil 20mg/ml THC 40mg/ml CBD',br:'Curaleaf Oils',thc:'20mg/ml',cbd:'40mg/ml',form:'Oral oil',s:'in',p:'£70/10ml · £160/30ml',terps:['Myrcene','Beta-caryophyllene'],rat:'Step-up option if lower CBD:THC ratio needed. Retains significant CBD for anti-inflammatory support.'},
+      {n:'Cura-LCE Flower THC 20% CBD <1%',br:'Curaleaf (Indica)',thc:'20%',cbd:'<1%',form:'Dried flower (vape)',s:'in',p:'£5.50/g · £55/10g',terps:['Myrcene','Linalool','Beta-caryophyllene'],rat:'Indica strain for patients with prior exposure. Evening/night use. Myrcene promotes sedative analgesia.'}
+    ]
+  },
+  menopause:{
+    first:[
+      {n:'Curaleaf Oil <5mg/ml THC 50mg/ml CBD',br:'Curaleaf Oils (CBD Full Spectrum)',thc:'<5mg/ml',cbd:'50mg/ml',form:'Oral oil',s:'in',p:'£50/10ml · £115/30ml',terps:['Linalool','Beta-caryophyllene','Myrcene'],rat:'CBD-dominant oil preferred first-line. CBD modulates serotonergic and endocannabinoid pathways relevant to vasomotor symptoms, mood, and sleep. Linalool provides anxiolytic and sleep-supporting effects. Minimal psychoactive risk allows daytime use.'},
+      {n:'Curaleaf 2.5mg THC/5mg CBD Capsules (28)',br:'Curaleaf Capsules',thc:'2.5mg',cbd:'5mg',form:'Oral capsule',s:'in',p:'£2.15/cap · £60/28-pack',terps:['Myrcene','Linalool'],rat:'Fixed-dose capsules convenient for daily management of mood, sleep, and pelvic discomfort. Full spectrum entourage effect.'}
+    ],
+    second:[
+      {n:'Curaleaf 10mg THC, 10mg CBD Pastilles (Mixed Berries)',br:'Curaleaf Pastilles',thc:'10mg',cbd:'10mg',form:'Pastille',s:'in',p:'£2.45/pastille · £34.30/14-pack',terps:['Myrcene','Beta-caryophyllene'],rat:'Sublingual pastille for breakthrough sleep disruption or hot flushes. Onset 30–60 min. Fixed dose for easy titration.'}
+    ]
+  },
+  endometriosis:{
+    first:[
+      {n:'Curaleaf Oil 20mg/ml THC 80mg/ml CBD',br:'Curaleaf Oils',thc:'20mg/ml',cbd:'80mg/ml',form:'Oral oil',s:'in',p:'£80/10ml · £195/30ml',terps:['Beta-caryophyllene','Myrcene','Linalool'],rat:'High CBD ratio targets CB2 receptor-mediated anti-inflammatory pathways. Beta-caryophyllene is a selective CB2 agonist — high CB2 expression in endometriotic lesions. Linalool provides analgesic and anxiolytic support.'},
+      {n:'Curaleaf 5mg THC/10mg CBD Capsules (28)',br:'Curaleaf Capsules',thc:'5mg',cbd:'10mg',form:'Oral capsule',s:'in',p:'£2.68/cap · £75/28-pack',terps:['Myrcene','Beta-caryophyllene'],rat:'Predictable fixed-dose for daily pain management. CBD:THC 2:1 suitable for mild THC contribution to visceral analgesia. Dose 30–60 min before anticipated pain.'}
+    ],
+    second:[
+      {n:'Cura-PWE Flower THC 11% CBD 11%',br:'Curaleaf (Balanced)',thc:'11%',cbd:'11%',form:'Dried flower (vape)',s:'low',p:'£6.90/g · £69/10g',terps:['Beta-caryophyllene','Myrcene','Pinene'],rat:'For acute breakthrough pelvic pain. Fast-onset vaporisation. Use as rescue dose alongside daily oral product. Note: low stock.'}
+    ]
+  },
+  pain_endo:{first:[{n:'Curaleaf Oil 20mg/ml THC 80mg/ml CBD',br:'Curaleaf Oils',thc:'20mg/ml',cbd:'80mg/ml',form:'Oral oil',s:'in',p:'£80/10ml · £195/30ml',terps:['Beta-caryophyllene','Myrcene','Linalool'],rat:'High CBD:THC with CB2-active terpene profile optimal for central and peripheral sensitisation in endometriosis-related pelvic pain.'}],second:[{n:'Curaleaf 5mg THC/10mg CBD Capsules',br:'Curaleaf Capsules',thc:'5mg',cbd:'10mg',form:'Oral capsule',s:'in',p:'£2.68/cap · £75/28-pack',terps:['Myrcene','Beta-caryophyllene'],rat:'Step-up when CBD-dominant oil provides insufficient analgesia. Higher THC adds central analgesic action on descending pain pathways.'}]},
+  pms:{first:[{n:'Curaleaf Oil <5mg/ml THC 50mg/ml CBD',br:'Curaleaf Oils (CBD Full Spectrum)',thc:'<5mg/ml',cbd:'50mg/ml',form:'Oral oil',s:'in',p:'£50/10ml · £115/30ml',terps:['Linalool','Beta-caryophyllene'],rat:'CBD may modulate 5-HT1A activity relevant to luteal phase dysphoria. Linalool offers anxiolytic properties. Consider cyclical dosing aligned to luteal phase (days 15–28).'}],second:[{n:'Curaleaf 2.5mg THC/5mg CBD Capsules (28)',br:'Curaleaf Capsules',thc:'2.5mg',cbd:'5mg',form:'Oral capsule',s:'in',p:'£2.15/cap · £60/28-pack',terps:['Myrcene','Linalool'],rat:'Fixed-dose for consistent symptom control across the symptomatic luteal phase.'}]},
+  anxiety:{first:[{n:'Curaleaf Oil <5mg/ml THC 50mg/ml CBD',br:'Curaleaf Oils (CBD Full Spectrum)',thc:'<5mg/ml',cbd:'50mg/ml',form:'Oral oil',s:'in',p:'£50/10ml · £115/30ml',terps:['Linalool','Beta-caryophyllene','Myrcene'],rat:'CBD-dominant essential — high-THC products risk exacerbating anxiety. CBD modulates 5-HT1A and TRPV1. Linalool provides direct anxiolytic and GABAergic effects.'}],second:[{n:'Curaleaf 2.5mg THC/5mg CBD Capsules',br:'Curaleaf Capsules',thc:'2.5mg',cbd:'5mg',form:'Oral capsule',s:'in',p:'£2.15/cap · £60/28-pack',terps:['Linalool','Myrcene'],rat:'When very low-dose THC is appropriate. Only for established patients with no THC-induced anxiety at low doses.'}]},
+  ptsd:{first:[{n:'Curaleaf Oil 20mg/ml THC 80mg/ml CBD',br:'Curaleaf Oils',thc:'20mg/ml',cbd:'80mg/ml',form:'Oral oil',s:'in',p:'£80/10ml · £195/30ml',terps:['Myrcene','Linalool','Beta-caryophyllene'],rat:'Targets sleep disturbance and hyperarousal. THC supports fear extinction via CB1; CBD reduces anxiety and nightmare intensity. Evening dosing recommended.'},{n:'Cura-LCE Flower THC 20% CBD <1% (Indica)',br:'Curaleaf Dried Flower',thc:'20%',cbd:'<1%',form:'Dried flower (vape)',s:'in',p:'£5.50/g · £55/10g',terps:['Myrcene','Linalool'],rat:'Indica for patients with predominantly sleep disruption. Fast-onset vaporisation allows titration. Night use only.'}],second:[]},
+  sleep:{first:[{n:'Cura-LCE Flower THC 20% CBD <1% (Indica)',br:'Curaleaf Dried Flower',thc:'20%',cbd:'<1%',form:'Dried flower (vape)',s:'in',p:'£5.50/g · £55/10g',terps:['Myrcene','Linalool','Bisabolol'],rat:'Indica with myrcene-heavy profile for sedative sleep-onset effect. Fastest onset. Start 1–2 short draws; wait 10 min before re-dosing.'},{n:'Curaleaf Oil 20mg/ml THC 80mg/ml CBD',br:'Curaleaf Oils',thc:'20mg/ml',cbd:'80mg/ml',form:'Oral oil',s:'in',p:'£80/10ml · £195/30ml',terps:['Myrcene','Linalool'],rat:'Take 60–90 min before bed for sleep maintenance. CBD augments sleep architecture; THC reduces sleep latency.'}],second:[{n:'Curaleaf 10mg THC, 10mg CBD Pastilles (Mixed Berries)',br:'Curaleaf Pastilles',thc:'10mg',cbd:'10mg',form:'Pastille',s:'in',p:'£2.45/pastille · £34.30/14-pack',terps:['Myrcene','Linalool'],rat:'Fixed-dose pastille. 30–60 min onset. Balanced ratio reduces risk of next-day grogginess.'}]},
+  nausea:{first:[{n:'Curaleaf Oil 50mg/ml THC <1mg/ml CBD',br:'Curaleaf Oils (THC Range)',thc:'50mg/ml',cbd:'<1mg/ml',form:'Oral oil',s:'in',p:'£50/10ml · £115/30ml',terps:['Myrcene','Terpinolene'],rat:'High-THC oil for CINV. THC acts on CB1 in the dorsal vagal complex to suppress emesis. Titrate from 2.5mg THC.'},{n:'Curaleaf Orange Pastilles 10mg THC',br:'Curaleaf Pastilles',thc:'10mg',cbd:'0mg',form:'Pastille',s:'in',p:'£2.30/pastille · £32.20/14-pack',terps:['Myrcene','Limonene'],rat:'Fixed-dose pastille for anticipatory or acute nausea. Onset 30–45 min. Limonene has anti-emetic and mood-elevating properties.'}],second:[]},
+  appetite:{first:[{n:'Curaleaf Oil 100mg/ml THC <7mg/ml CBD',br:'Curaleaf Oils (THC Range)',thc:'100mg/ml',cbd:'<7mg/ml',form:'Oral oil',s:'in',p:'£80/10ml · £195/30ml',terps:['Myrcene','Terpinolene','Humulene'],rat:'High-concentration THC for cancer cachexia. THC activates hypothalamic CB1 stimulating ghrelin/appetite. Start 2.5mg to assess tolerance in frail patients.'}],second:[]},
+  spasticity:{first:[{n:'Curaleaf Oil THC 10mg/ml CBD 10mg/ml',br:'Curaleaf Oils (Combination)',thc:'10mg/ml',cbd:'10mg/ml',form:'Oral oil',s:'in',p:'£30/10ml · £80/30ml',terps:['Myrcene','Terpinolene','Pinene'],rat:'Balanced 1:1 as practical alternative to Sativex. THC reduces spasticity via CB1; CBD modulates GABA and glycine receptors. Pinene may reduce THC-associated cognitive impairment.'}],second:[{n:'Cura-PWE Flower THC 11% CBD 11%',br:'Curaleaf (Balanced)',thc:'11%',cbd:'11%',form:'Dried flower (vape)',s:'low',p:'£6.90/g · £69/10g',terps:['Myrcene','Beta-caryophyllene','Pinene'],rat:'Vaporised balanced flower for rapid-onset spasticity relief. Rescue dose. Note: low stock.'}]},
+  migraine:{first:[{n:'Curaleaf Liquid Vape THC 200mg CBD 200mg JHR per 0.5g QUE Cartridge',br:'Curaleaf QUE Liquid Vape',thc:'200mg/0.5g',cbd:'200mg/0.5g',form:'Liquid vape (QUE)',s:'in',p:'£27.95/cartridge + £9.95 device',terps:['Beta-caryophyllene','Myrcene','Linalool'],rat:'Rapid-onset ideal for acute migraine. Balanced THC:CBD reduces trigeminovascular inflammation while THC provides acute analgesia. Requires Curaleaf QUE device.'},{n:'Curaleaf Oil 20mg/ml THC 80mg/ml CBD',br:'Curaleaf Oils',thc:'20mg/ml',cbd:'80mg/ml',form:'Oral oil (prophylaxis)',s:'in',p:'£80/10ml · £195/30ml',terps:['Beta-caryophyllene','Linalool'],rat:'CBD-dominant oil for migraine prophylaxis daily. CB2 activity may reduce migraine frequency.'}],second:[]},
+  fibromyalgia:{first:[{n:'Curaleaf Oil 20mg/ml THC 40mg/ml CBD',br:'Curaleaf Oils',thc:'20mg/ml',cbd:'40mg/ml',form:'Oral oil',s:'in',p:'£70/10ml · £160/30ml',terps:['Myrcene','Beta-caryophyllene','Linalool'],rat:'Addresses multiple fibromyalgia components: pain (THC/CBD), sleep (myrcene/linalool), mood (CBD serotonin modulation). Twice-daily dosing recommended.'}],second:[{n:'Cura-LCE Flower THC 20% (Indica)',br:'Curaleaf Dried Flower',thc:'20%',cbd:'<1%',form:'Dried flower (vape)',s:'in',p:'£5.50/g · £55/10g',terps:['Myrcene','Linalool'],rat:'Night-time indica for sleep component. Use alongside daytime CBD-dominant oil.'}]},
+  pain_msk:{first:[{n:'Curaleaf Oil 20mg/ml THC 80mg/ml CBD',br:'Curaleaf Oils',thc:'20mg/ml',cbd:'80mg/ml',form:'Oral oil',s:'in',p:'£80/10ml · £195/30ml',terps:['Beta-caryophyllene','Myrcene','Pinene'],rat:'High CBD:THC reduces musculoskeletal inflammation via CB2 and TRPV1. Beta-caryophyllene is a selective CB2 agonist relevant to peripheral joint inflammation.'}],second:[{n:'Curaleaf 5mg THC/10mg CBD Capsules',br:'Curaleaf Capsules',thc:'5mg',cbd:'10mg',form:'Oral capsule',s:'in',p:'£2.68/cap · £75/28-pack',terps:['Beta-caryophyllene','Myrcene'],rat:'Fixed-dose capsule convenient for arthritic patients with dexterity difficulties. Sustained release for constant joint pain.'}]},
+  ibd:{first:[{n:'Curaleaf Oil <5mg/ml THC 50mg/ml CBD',br:'Curaleaf Oils (CBD Full Spectrum)',thc:'<5mg/ml',cbd:'50mg/ml',form:'Oral oil',s:'in',p:'£50/10ml · £115/30ml',terps:['Beta-caryophyllene','Myrcene'],rat:'CBD-dominant minimises THC-induced motility effects. CBD reduces intestinal inflammation via CB2/TRPV1. Only after all licensed options exhausted.'}],second:[]},
+  ibs:{first:[{n:'Curaleaf Oil <5mg/ml THC 50mg/ml CBD',br:'Curaleaf Oils (CBD Full Spectrum)',thc:'<5mg/ml',cbd:'50mg/ml',form:'Oral oil',s:'in',p:'£50/10ml · £115/30ml',terps:['Beta-caryophyllene','Linalool','Myrcene'],rat:'CBD modulates enteric CB1 to reduce visceral hypersensitivity. Linalool gut-calming effect. Very limited evidence — last resort only.'}],second:[]},
+  epilepsy:{first:[{n:'Curaleaf Oil <10mg/ml THC 100mg/ml CBD',br:'Curaleaf Oils (CBD Full Spectrum)',thc:'<10mg/ml',cbd:'100mg/ml',form:'Oral oil',s:'in',p:'£80/10ml · £195/30ml',terps:['Myrcene','Linalool'],rat:'High-concentration CBD where Epidyolex unavailable. Doses up to 20mg/kg/day in published trials. Neurology co-prescribing required; TDM for clobazam.'}],second:[]},
+  pain_cancer:{first:[{n:'Curaleaf Oil 20mg/ml THC 40mg/ml CBD',br:'Curaleaf Oils',thc:'20mg/ml',cbd:'40mg/ml',form:'Oral oil',s:'in',p:'£70/10ml · £160/30ml',terps:['Myrcene','Beta-caryophyllene','Linalool'],rat:'THC for central analgesia, CBD for anti-inflammatory and opioid-sparing. Myrcene augments sedative analgesia. Oncology MDT review recommended.'},{n:'Curaleaf Orange Pastilles 10mg THC',br:'Curaleaf Pastilles',thc:'10mg',cbd:'0mg',form:'Pastille',s:'in',p:'£2.30/pastille · £32.20/14-pack',terps:['Limonene','Myrcene'],rat:'Breakthrough pain pastille. Fixed 10mg THC dose for predictable rescue analgesia. Limonene mood-elevating in palliative context.'}],second:[]}
+};
+
+const DOSING={
+  default:[{p:'Initiation',d:'CBD oil: 5–10mg twice daily\nTHC: 2.5mg at night (if applicable)',dur:'Weeks 1–2',n:'Assess tolerability. Warn re: sedation, dizziness, dry mouth.'},{p:'Titration',d:'Increase CBD by 5mg / THC by 2.5mg every 3–7 days',dur:'Weeks 3–8',n:'Target lowest effective dose. Reassess outcome scores.'},{p:'Maintenance',d:'Individualised. CBD 15–50mg/day; THC 2.5–20mg/day',dur:'Ongoing',n:'3-month review. Drug holidays to assess ongoing need.'}],
+  pastille:[{p:'Initiation',d:'1 x 5mg THC/5mg CBD pastille at night',dur:'Weeks 1–2',n:'Assess tolerability and onset time (30–60 min).'},{p:'Titration',d:'Increase to 1–2 x 10mg:10mg pastilles as tolerated',dur:'Weeks 3–6',n:'Maximum 2 pastilles per dose; max 4 per day.'},{p:'Maintenance',d:'Individualised; 1–2 pastilles per episode',dur:'Ongoing',n:'Avoid regular daytime use to minimise tolerance.'}],
+  vape:[{p:'Initiation',d:'1–2 short inhalations; wait 10 min before repeat',dur:'Days 1–7',n:'Medically certified device required (Curaleaf QUE: £9.95).'},{p:'Titration',d:'Increase by 1 inhalation per session as tolerated',dur:'Weeks 2–4',n:'Max 3–5 inhalations per session. Document total daily dose.'},{p:'Maintenance',d:'Typically 0.1–0.3g dried flower/day',dur:'Ongoing',n:'Night-time use where possible. Review at 3 months.'}]
+};
+
+function goA(n){
+  for(let i=1;i<=4;i++){
+    document.getElementById('A-s'+i).classList.toggle('on',i===n);
+    const p=document.getElementById('A'+i);
+    p.classList.remove('active','done');
+    if(i===n)p.classList.add('active');else if(i<n)p.classList.add('done');
+  }
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function togA(el,t){
+  el.classList.toggle('on');
+  const v=el.dataset.val;
+  if(t==='c'){if(el.classList.contains('on'))aC.push(v);else aC=aC.filter(x=>x!==v);aCAlert();}
+  if(t==='m'){if(el.classList.contains('on'))aM.push(v);else aM=aM.filter(x=>x!==v);aIntPanel();}
+}
+function togRoute(el){
+  el.classList.toggle('on');
+  const v=el.dataset.val;
+  if(el.classList.contains('on'))aR.push(v);else aR=aR.filter(x=>x!==v);
+}
+function aCAlert(){
+  const el=document.getElementById('A-ca');
+  const danger=['psychosis','pregnancy','under18'];
+  const hD=aC.some(v=>danger.includes(v));
+  const hW=aC.some(v=>!danger.includes(v));
+  el.innerHTML=hD?'<div class="al al-d" style="margin-top:10px;"><strong>Absolute contraindication identified.</strong> Prescribing not recommended. Document detailed rationale if proceeding exceptionally.</div>':hW?'<div class="al al-w" style="margin-top:10px;"><strong>Caution flagged.</strong> Enhanced monitoring required. Document risk-benefit discussion.</div>':'';
+}
+function aEv(){
+  const v=document.getElementById('A-ind').value;
+  const el=document.getElementById('A-ev');
+  if(!v||!EVID[v]){el.innerHTML='';return;}
+  const e=EVID[v];
+  el.innerHTML=`<div class="ev-block"><div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;"><span style="font-size:13px;font-weight:500;color:var(--text2);">Evidence level</span><span class="badge ${e.cls}">${e.level}</span></div><div style="font-size:13px;color:var(--text2);line-height:1.6;">${e.note}</div></div>`;
+}
+function aIntPanel(){
+  const el=document.getElementById('A-ip');
+  if(!aM.length){el.innerHTML='';return;}
+  const items=aM.map(v=>INTS[v]).filter(Boolean);
+  const major=items.filter(i=>i.s==='major');
+  let html=major.length?'<div class="al al-d" style="margin-bottom:8px;"><strong>Major interaction(s)</strong> — specialist pharmacist review required.</div>':items.some(i=>i.s==='moderate')?'<div class="al al-w" style="margin-bottom:8px;"><strong>Moderate interaction(s)</strong> — enhanced monitoring required.</div>':'';
+  html+=`<div style="border:0.5px solid var(--border);border-radius:var(--r8);padding:4px 14px;">`;
+  items.forEach(i=>{
+    const c=i.s==='major'?'dot-r':i.s==='moderate'?'dot-a':'dot-g';
+    html+=`<div class="int-item"><div class="rf-dot ${c}"></div><div><div style="font-weight:500;margin-bottom:2px;">${i.d}</div><div style="color:var(--text2);">${i.t}</div></div></div>`;
+  });
+  html+=`</div>`;
+  el.innerHTML=html;
+}
+function sSt(s){return s==='in'?'<span class="stock-in">In stock</span>':s==='low'?'<span class="stock-low">Low stock</span>':'<span class="stock-out">Out of stock</span>';}
+function buildA(){
+  const age=document.getElementById('A-age').value||'—';
+  const sex=document.getElementById('A-sex').value||'—';
+  const indEl=document.getElementById('A-ind');
+  const indTxt=indEl.options[indEl.selectedIndex]?.text||'—';
+  const indVal=indEl.value;
+  const hD=aC.some(v=>['psychosis','pregnancy','under18'].includes(v));
+  const hMI=aM.some(v=>INTS[v]?.s==='major');
+  const ev=EVID[indVal];
+  let html='';
+  if(hD)html+=`<div class="al al-d"><strong>Prescribing not recommended</strong> — absolute contraindication. Document detailed rationale if proceeding.</div>`;
+  if(hMI)html+=`<div class="al al-d"><strong>Major drug interaction identified.</strong> Specialist pharmacist review required before prescribing.</div>`;
+  if(!hD&&!hMI)html+=`<div class="al al-s"><strong>No absolute contraindications or major interactions identified.</strong> Proceed with protocol below.</div>`;
+  const evB=ev?`<span class="badge ${ev.cls}" style="margin-left:8px;">${ev.level} evidence</span>`:'';
+  html+=`<div class="sum-grid">
+    <div class="sum-item"><div class="sum-label">Patient</div><div class="sum-val">${age} yrs, ${sex}</div></div>
+    <div class="sum-item"><div class="sum-label">Indication</div><div class="sum-val">${indTxt}${evB}</div></div>
+    <div class="sum-item"><div class="sum-label">Cautions</div><div class="sum-val">${aC.length?aC.join(', '):'None identified'}</div></div>
+    <div class="sum-item"><div class="sum-label">Route</div><div class="sum-val">${aR.join(', ')||'Not specified'}</div></div>
+  </div>`;
+  const prods=PRODS[indVal]||PRODS['pain_neuropathic'];
+  if(prods.first?.length){
+    html+=`<div style="font-size:14px;font-weight:500;margin-bottom:10px;font-family:system-ui,sans-serif;">First-line recommendations — Curaleaf April 2026</div>`;
+    prods.first.forEach(p=>{
+      html+=`<div class="prod-card rec"><div class="prod-hdr"><div><div class="prod-name">${p.n}</div><div class="prod-brand">${p.br}</div></div><div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;"><span class="badge b-purple">First-line</span><span class="badge b-teal">${p.form}</span>${sSt(p.s)}</div></div>
+      <div class="prod-meta"><span><strong>THC:</strong> ${p.thc}</span><span><strong>CBD:</strong> ${p.cbd}</span><span><strong>Price:</strong> ${p.p}</span></div>
+      <div class="terp-row"><strong>Terpene profile: </strong>${p.terps.map(t=>`<span class="terp-pill">${t}</span>`).join('')}</div>
+      <div class="rat-box"><strong>Clinical rationale: </strong>${p.rat}</div></div>`;
+    });
+  }
+  if(prods.second?.length){
+    html+=`<div style="font-size:14px;font-weight:500;margin:14px 0 10px;font-family:system-ui,sans-serif;">Second-line / adjunct options</div>`;
+    prods.second.forEach(p=>{
+      html+=`<div class="prod-card"><div class="prod-hdr"><div><div class="prod-name">${p.n}</div><div class="prod-brand">${p.br}</div></div><div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;"><span class="badge b-gray">Second-line</span><span class="badge b-teal">${p.form}</span>${sSt(p.s)}</div></div>
+      <div class="prod-meta"><span><strong>THC:</strong> ${p.thc}</span><span><strong>CBD:</strong> ${p.cbd}</span><span><strong>Price:</strong> ${p.p}</span></div>
+      <div class="terp-row"><strong>Terpene profile: </strong>${p.terps.map(t=>`<span class="terp-pill">${t}</span>`).join('')}</div>
+      <div class="rat-box"><strong>Clinical rationale: </strong>${p.rat}</div></div>`;
+    });
+  }
+  const dk=aR.includes('pastille')?'pastille':(aR.includes('vape')||aR.includes('liquid_vape'))?'vape':'default';
+  html+=`<div class="divider"></div><div style="font-size:14px;font-weight:500;margin-bottom:10px;font-family:system-ui,sans-serif;">Titration schedule</div>
+  <table class="dtable"><thead><tr><th>Phase</th><th>Dose</th><th>Duration</th><th>Notes</th></tr></thead><tbody>`;
+  DOSING[dk].forEach(d=>{html+=`<tr><td style="font-weight:600;white-space:nowrap;">${d.p}</td><td style="white-space:pre-line;">${d.d}</td><td style="white-space:nowrap;">${d.dur}</td><td style="color:var(--text2);">${d.n}</td></tr>`;});
+  html+=`</tbody></table>`;
+  html+=`<div class="divider"></div><div style="font-size:14px;font-weight:500;margin-bottom:10px;font-family:system-ui,sans-serif;">UK regulatory checklist (Schedule 2)</div>
+  <div style="border:1px solid var(--border);border-radius:var(--r8);padding:6px 16px;">`;
+  ['FP10(MDA) or private CD prescription with all statutory particulars','Total quantity in words and figures; dose, form, and frequency stated','Prescriber is a specialist per NHS England access policy','≥2 prior treatment failures documented in clinical notes','Patient counselled on driving (s.5A RTA 1988) — documented','Informed consent documented — benefits, risks, evidence limitations','Baseline outcome measures recorded (NRS, EQ-5D, PHQ-9, PSQI as applicable)','3-month review appointment booked','Products stored below 25°C, away from light; 90-day expiry from manufacture'].forEach((c,i)=>{
+    html+=`<div class="doc-row"><input type="checkbox" id="ac${i}"><label for="ac${i}">${c}</label></div>`;
+  });
+  html+=`</div><div class="divider"></div><div class="disclaimer"><strong>Clinical disclaimer:</strong> For specialist prescriber use only. Formulary data: Curaleaf Laboratories April 2026 (MHRA No: MS 41467). Drug interaction data based on published CYP450 pharmacology. All prescribing decisions remain the clinical and legal responsibility of the prescriber. Not for patient distribution.</div>`;
+  document.getElementById('A-rec').innerHTML=html;
+}
+function resetA(){
+  aC=[];aM=[];aR=['oral'];
+  document.querySelectorAll('#page1 input,#page1 select,#page1 textarea').forEach(el=>{if(el.type==='checkbox')el.checked=false;else if(el.tagName==='SELECT')el.selectedIndex=0;else el.value='';});
+  document.querySelectorAll('#page1 .chip.on').forEach(c=>c.classList.remove('on'));
+  document.querySelector('#A-routes [data-val="oral"]').classList.add('on');
+  ['A-ca','A-ev','A-ip'].forEach(id=>{const e=document.getElementById(id);if(e)e.innerHTML='';});
+  goA(1);
+}
+
+// ═══════════════════════════════
+// PAGE B — REPEAT PRESCRIBER DATA
+// ═══════════════════════════════
+let bAE=[],bInt=[];
+const RF_STOP=['psychosis','suicidal','cvs','seizure'];
+const RF_REFER=['mood-worse','anxiety-worse','cog','driving'];
+const BINTS={
+  warfarin:{s:'major',d:'Warfarin / anticoagulants',t:'CBD inhibits CYP2C9 — may increase warfarin. Check INR urgently. Refer to specialist if INR unstable.'},
+  ssri:{s:'moderate',d:'SSRIs / SNRIs',t:'Additive serotonergic effect. CBD may inhibit CYP2D6. Monitor for serotonin syndrome.'},
+  benzo:{s:'moderate',d:'Benzodiazepines',t:'Additive CNS depression. Review whether benzodiazepine dose reduction is appropriate.'},
+  opioids:{s:'moderate',d:'Opioids',t:'Synergistic sedation risk. Also potential opioid-sparing benefit. Document both.'},
+  aeds:{s:'major',d:'Antiepileptics (AEDs)',t:'CBD increases clobazam levels. Valproate + CBD raises hepatotoxicity risk. TDM required. Refer before reauthorising.'},
+  statins:{s:'minor',d:'Statins',t:'CBD inhibits CYP3A4 — increased statin exposure. Monitor for myopathy.'},
+  immunosup:{s:'moderate',d:'Immunosuppressants',t:'CBD inhibits CYP3A4 — tacrolimus/ciclosporin toxicity risk. TDM essential. Do not reauthorise without specialist review.'},
+  tamoxifen:{s:'moderate',d:'Tamoxifen / aromatase inhibitors',t:'CBD inhibits CYP2D6 — may reduce tamoxifen conversion to active endoxifen. Discuss with oncology.'}
+};
+
+function goB(n){
+  for(let i=1;i<=4;i++){
+    document.getElementById('B-s'+i).classList.toggle('on',i===n);
+    const p=document.getElementById('B'+i);
+    p.classList.remove('active','done');
+    if(i===n)p.classList.add('active');else if(i<n)p.classList.add('done');
+  }
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function bSpecAlert(){
+  const v=document.getElementById('B-specrev').value;
+  document.getElementById('B-sa').innerHTML=v==='no'?'<div class="al al-w" style="margin-top:8px;">Specialist review overdue. Consider issuing only 4 weeks supply while awaiting review. Prompt patient to book.</div>':'';
+}
+function togB(el,t){
+  if(el.dataset.val==='none'){
+    document.querySelectorAll(`#B-s3 .chip[data-val!="none"]`).forEach(c=>{if(c.closest('[id]')&&c.closest('[id]').id===el.closest('[class]')?.id)c.classList.remove('on');});
+    el.classList.add('on');
+    if(t==='ae'){bAE=[];document.getElementById('B-ae').innerHTML='';}
+    if(t==='int'){bInt=[];document.getElementById('B-ip').innerHTML='';}
+    return;
+  }
+  el.classList.toggle('on');
+  const v=el.dataset.val;
+  if(t==='ae'){if(el.classList.contains('on'))bAE.push(v);else bAE=bAE.filter(x=>x!==v);bAEAlert();}
+  if(t==='int'){if(el.classList.contains('on'))bInt.push(v);else bInt=bInt.filter(x=>x!==v);bIntPanel();}
+}
+function bAEAlert(){
+  const el=document.getElementById('B-ae');
+  const hS=bAE.some(v=>RF_STOP.includes(v));
+  const hR=bAE.some(v=>RF_REFER.includes(v));
+  el.innerHTML=hS?`<div class="al al-d" style="margin-top:10px;"><strong>STOP — do not reauthorise.</strong> Serious adverse effect(s) identified: ${bAE.filter(v=>RF_STOP.includes(v)).join(', ')}. Refer back to initiating specialist urgently.</div>`:hR?`<div class="al al-w" style="margin-top:10px;"><strong>Caution — consider specialist referral</strong> before reauthorising. Adverse effects flagged: ${bAE.filter(v=>RF_REFER.includes(v)).join(', ')}.</div>`:'';
+}
+function bMisuse(){
+  const early=document.getElementById('B-early').value;
+  const req=document.getElementById('B-dosereq').value;
+  const rec=document.getElementById('B-rec').value;
+  const issues=[];
+  if(early==='yes')issues.push('patient running out early — dose escalation or diversion risk');
+  if(req==='yes')issues.push('unsanctioned dose increase requests');
+  if(rec==='yes'||rec==='suspected')issues.push('concurrent recreational cannabis use — total exposure unknown');
+  document.getElementById('B-ma').innerHTML=issues.length?`<div class="al al-w" style="margin-top:10px;"><strong>Dependence/misuse signals.</strong> Complete CUDIT-R if not done. ${issues.map(i=>i.charAt(0).toUpperCase()+i.slice(1)).join('. ')}. Consider referral before reauthorising.</div>`:'';
+}
+function bIntPanel(){
+  const el=document.getElementById('B-ip');
+  if(!bInt.length){el.innerHTML='';return;}
+  const items=bInt.map(v=>BINTS[v]).filter(Boolean);
+  const major=items.filter(i=>i.s==='major');
+  let html=major.length?'<div class="al al-d" style="margin-top:10px;margin-bottom:8px;"><strong>Major interaction(s) with new medication.</strong> Do not reauthorise without specialist review.</div>':items.some(i=>i.s==='moderate')?'<div class="al al-w" style="margin-top:10px;margin-bottom:8px;"><strong>Moderate interaction(s).</strong> Discuss with patient and document before reauthorising.</div>':'';
+  html+=`<div style="border:0.5px solid var(--border);border-radius:var(--r8);padding:4px 14px;margin-top:8px;">`;
+  items.forEach(i=>{html+=`<div class="int-item"><div class="rf-dot ${i.s==='major'?'dot-r':i.s==='moderate'?'dot-a':'dot-g'}"></div><div><div style="font-weight:500;margin-bottom:2px;">${i.d}</div><div style="color:var(--text2);">${i.t}</div></div></div>`;});
+  html+=`</div>`;el.innerHTML=html;
+}
+function sc(t){
+  const get=id=>parseFloat(document.getElementById(id)?.value);
+  const setBadge=(id,cls,txt)=>{const b=document.getElementById(id);b.className='sc-badge '+cls;b.textContent=txt;};
+  if(t==='nrs'){
+    const b=get('nrs-b'),n=get('nrs-n');
+    if(isNaN(b)||isNaN(n)){setBadge('nrs-badge','sc-n','—');return;}
+    const d=b-n,pct=b>0?Math.round(d/b*100):0;
+    if(d>=2&&pct>=30)setBadge('nrs-badge','sc-g',`↓${d.toFixed(1)} (${pct}%)`);
+    else if(d>0)setBadge('nrs-badge','sc-a',`↓${d.toFixed(1)} — marginal`);
+    else if(d<0)setBadge('nrs-badge','sc-r',`↑${Math.abs(d).toFixed(1)} — worse`);
+    else setBadge('nrs-badge','sc-a','No change');
+  }
+  if(t==='psqi'){
+    const b=get('psqi-b'),n=get('psqi-n');
+    if(isNaN(b)||isNaN(n)){setBadge('psqi-badge','sc-n','—');return;}
+    const d=b-n;
+    if(n<=5)setBadge('psqi-badge','sc-g',`Score ${n} — normal`);
+    else if(d>=3)setBadge('psqi-badge','sc-g',`↓${d.toFixed(0)} — improved`);
+    else if(d<0)setBadge('psqi-badge','sc-r',`↑${Math.abs(d).toFixed(0)} — worse`);
+    else setBadge('psqi-badge','sc-a',`Score ${n} — monitor`);
+  }
+  if(t==='gad'){
+    const b=get('gad-b'),n=get('gad-n');
+    if(isNaN(b)||isNaN(n)){setBadge('gad-badge','sc-n','—');return;}
+    const d=b-n;
+    if(n<=4)setBadge('gad-badge','sc-g',`Score ${n} — minimal`);
+    else if(d<-4)setBadge('gad-badge','sc-r',`↑${Math.abs(d).toFixed(0)} — significant worsening`);
+    else if(d<0)setBadge('gad-badge','sc-r',`↑${Math.abs(d).toFixed(0)} — worse`);
+    else if(d>=4)setBadge('gad-badge','sc-g',`↓${d.toFixed(0)} — improved`);
+    else setBadge('gad-badge','sc-a',`Score ${n} — monitor`);
+  }
+  if(t==='phq'){
+    const b=get('phq-b'),n=get('phq-n');
+    if(isNaN(b)||isNaN(n)){setBadge('phq-badge','sc-n','—');return;}
+    const d=b-n;
+    if(n<=4)setBadge('phq-badge','sc-g',`Score ${n} — minimal`);
+    else if(n>=10)setBadge('phq-badge','sc-r',`Score ${n} — mod/severe`);
+    else if(d>=5)setBadge('phq-badge','sc-g',`↓${d.toFixed(0)} — improved`);
+    else if(d<-4)setBadge('phq-badge','sc-r',`↑${Math.abs(d).toFixed(0)} — significant`);
+    else setBadge('phq-badge','sc-a',`Score ${n}`);
+  }
+  if(t==='pgic'){
+    const v=parseInt(document.getElementById('pgic').value);
+    if(!v){setBadge('pgic-badge','sc-n','—');return;}
+    if(v<=2)setBadge('pgic-badge','sc-g','Improved');
+    else if(v===3)setBadge('pgic-badge','sc-a','Slightly better');
+    else if(v===4)setBadge('pgic-badge','sc-a','No change');
+    else setBadge('pgic-badge','sc-r','Worse');
+  }
+  if(t==='cudit'){
+    const n=parseInt(document.getElementById('cudit').value);
+    if(isNaN(n)){setBadge('cudit-badge','sc-n','—');return;}
+    if(n<8)setBadge('cudit-badge','sc-g',`Score ${n} — low risk`);
+    else if(n<13)setBadge('cudit-badge','sc-a',`Score ${n} — hazardous`);
+    else setBadge('cudit-badge','sc-r',`Score ${n} — dependence`);
+  }
+}
+function buildB(){
+  const ptName=document.getElementById('B-name').value||'—';
+  const revDate=document.getElementById('B-date').value||'—';
+  const prescName=document.getElementById('B-presc').value||'—';
+  const prescRole=document.getElementById('B-role').value||'—';
+  const currentRx=document.getElementById('B-rx').value||'—';
+  const specRevEl=document.getElementById('B-specrev');
+  const specRevTxt=specRevEl.options[specRevEl.selectedIndex]?.text||'—';
+  const cudit=parseInt(document.getElementById('cudit').value)||0;
+  const hStop=bAE.some(v=>RF_STOP.includes(v));
+  const hRefer=bAE.some(v=>RF_REFER.includes(v));
+  const hMajInt=bInt.some(v=>BINTS[v]?.s==='major');
+  const hModInt=bInt.some(v=>BINTS[v]?.s==='moderate');
+  const earlyOut=document.getElementById('B-early').value;
+  const doseReq=document.getElementById('B-dosereq').value;
+  const recUse=document.getElementById('B-rec').value;
+  const hMisuse=earlyOut==='yes'||doseReq==='yes'||recUse==='yes'||recUse==='suspected';
+  const specOverdue=document.getElementById('B-specrev').value==='no';
+  const nrsN=parseFloat(document.getElementById('nrs-n').value);
+  const nrsB=parseFloat(document.getElementById('nrs-b').value);
+  const pgic=parseInt(document.getElementById('pgic').value);
+  const phqN=parseFloat(document.getElementById('phq-n').value);
+  const gadN=parseFloat(document.getElementById('gad-n').value);
+
+  let red=0,amber=0;
+  if(hStop)red+=3;if(hMajInt)red+=2;if(cudit>=13)red+=2;
+  if(hMisuse)amber+=2;if(hRefer)amber+=2;if(hModInt)amber++;
+  if(specOverdue)amber++;if(cudit>=8&&cudit<13)amber++;
+  if(!isNaN(phqN)&&phqN>=10)amber++;if(!isNaN(gadN)&&gadN>=10)amber++;
+  if(pgic>=5)amber++;if(!isNaN(nrsN)&&!isNaN(nrsB)&&nrsN>=nrsB)amber++;
+
+  let vClass,vTitle,vBody,vActions,verdict;
+  if(red>0){verdict='stop';vClass='vb-red';vTitle='Do not reauthorise — refer to specialist';vBody='One or more serious concerns require specialist review before any further prescribing.';vActions=['Contact initiating specialist today or within 48 hours','Do not issue a repeat prescription until specialist has reviewed','If patient safety is at immediate risk, follow emergency care pathways','Document all findings and your decision not to reauthorise','Inform patient clearly that specialist review is required before continuing'];}
+  else if(amber>=3){verdict='caution';vClass='vb-amber';vTitle='Caution — seek specialist advice before reauthorising';vBody='Multiple concerns identified. The combined picture warrants discussion with the initiating specialist before issuing a repeat.';vActions=['Contact initiating specialist for clinical advice before prescribing','Document the concerns and any specialist guidance received','If specialist unavailable, issue a short supply (2 weeks) only while awaiting review','Patient should be aware of concerns and agree to specialist follow-up','Book a follow-up review in 4 weeks rather than standard interval'];}
+  else if(amber>0){verdict='conditional';vClass='vb-amber';vTitle='Reauthorise with conditions and enhanced monitoring';vBody='The prescription may be reauthorised but the amber flags below must be addressed and documented before issuing.';vActions=['Reauthorise current prescription unchanged (do not adjust dose without specialist input)','Address each amber flag below — document discussion with patient','Shorten review interval to 6–8 weeks','Ensure specialist is aware of concerns at next specialist review','Document clearly in notes the rationale for continuing'];}
+  else{verdict='continue';vClass='vb-green';vTitle='Safe to reauthorise — continue current prescription';vBody='No significant safety concerns identified. Outcome measures support continued benefit.';vActions=['Reauthorise current prescription unchanged','Confirm patient understands driving law (s.5A RTA 1988) — document','Book next review in 3 months','Remind patient to contact clinic if symptoms worsen or new side effects occur','Ensure specialist review is booked if approaching 6 months since last'];}
+
+  let html=`<div class="vbox ${vClass}"><div class="vb-title">${vTitle}</div><div class="vb-body">${vBody}</div></div>`;
+
+  const nrsChg=(!isNaN(nrsN)&&!isNaN(nrsB))?(nrsB-nrsN):null;
+  const nrsPct=nrsChg!==null&&nrsB>0?Math.round(nrsChg/nrsB*100):null;
+  html+=`<div class="metric-g">
+    <div class="mc"><div class="mc-label">Pain NRS change</div><div class="mc-val ${nrsChg!==null?(nrsChg>=2?'green':nrsChg<0?'red':'amber'):''}">${nrsChg!==null?(nrsChg>0?'↓':'↑')+Math.abs(nrsChg).toFixed(1)+(nrsPct!==null?' ('+nrsPct+'%)':''):'—'}</div></div>
+    <div class="mc"><div class="mc-label">CUDIT-R</div><div class="mc-val ${cudit>=13?'red':cudit>=8?'amber':'green'}">${cudit||'—'}</div></div>
+    <div class="mc"><div class="mc-label">Global impression</div><div class="mc-val" style="font-size:14px;">${pgic?document.getElementById('pgic').options[document.getElementById('pgic').selectedIndex].text.split('—')[1]?.trim()||'—':'—'}</div></div>
+  </div>`;
+
+  html+=`<div style="font-size:14px;font-weight:500;margin-bottom:10px;font-family:system-ui,sans-serif;">Recommended actions</div>`;
+  html+=`<div style="border:1px solid var(--border);border-radius:var(--r8);padding:6px 16px;margin-bottom:1.25rem;">`;
+  vActions.forEach((a,i)=>{html+=`<div class="doc-row"><input type="checkbox" id="ba${i}"><label for="ba${i}">${a}</label></div>`;});
+  html+=`</div>`;
+
+  const allFlags=[
+    ...bAE.filter(v=>RF_STOP.includes(v)).map(v=>({s:'red',t:`Red flag adverse effect: ${v.replace(/-/g,' ')}`})),
+    ...bAE.filter(v=>RF_REFER.includes(v)).map(v=>({s:'amber',t:`Adverse effect requiring monitoring: ${v.replace(/-/g,' ')}`})),
+    ...(hMajInt?[{s:'red',t:'Major drug interaction with new medication — specialist review required'}]:[]),
+    ...(hModInt?[{s:'amber',t:'Moderate drug interaction with new medication — monitor and document'}]:[]),
+    ...(cudit>=13?[{s:'red',t:`CUDIT-R ${cudit} — probable dependence. Do not reauthorise without specialist input`}]:[]),
+    ...(cudit>=8&&cudit<13?[{s:'amber',t:`CUDIT-R ${cudit} — hazardous use. Harm reduction discussion required`}]:[]),
+    ...(hMisuse?[{s:'amber',t:'Dependence/misuse signals identified — see safety review section'}]:[]),
+    ...(specOverdue?[{s:'amber',t:'Specialist review overdue — prompt patient to book'}]:[]),
+    ...(!isNaN(phqN)&&phqN>=10?[{s:'amber',t:`PHQ-9 ${phqN} — moderate/severe depression. Assess before reauthorising`}]:[]),
+    ...(!isNaN(gadN)&&gadN>=10?[{s:'amber',t:`GAD-7 ${gadN} — moderate/severe anxiety. Review THC-containing products`}]:[]),
+    ...(pgic>=5?[{s:'amber',t:'Patient reports worsening global function — review whether cannabis is contributing'}]:[]),
+    ...(!isNaN(nrsN)&&!isNaN(nrsB)&&nrsN>=nrsB?[{s:'amber',t:'Pain NRS not improved or worsened — review effectiveness of current product'}]:[])
+  ];
+
+  if(allFlags.length){
+    html+=`<div style="font-size:14px;font-weight:500;margin-bottom:10px;font-family:system-ui,sans-serif;">Flags identified at this review</div>`;
+    html+=`<div style="border:1px solid var(--border);border-radius:var(--r8);padding:4px 14px;margin-bottom:1.25rem;">`;
+    allFlags.forEach(f=>{html+=`<div class="rf-item"><div class="rf-dot ${f.s==='red'?'dot-r':'dot-a'}"></div><div>${f.t}</div></div>`;});
+    html+=`</div>`;
+  }
+
+  html+=`<div class="divider"></div>
+  <div style="font-size:14px;font-weight:500;margin-bottom:10px;font-family:system-ui,sans-serif;">Schedule 2 documentation checklist</div>
+  <div style="border:1px solid var(--border);border-radius:var(--r8);padding:6px 16px;margin-bottom:1.25rem;">`;
+  [`Outcome measures recorded (NRS, PSQI, GAD-7, PHQ-9, PGIC, CUDIT-R as applicable)`,`Adverse effects reviewed and documented`,`Drug interactions checked — no new interactions / managed as above`,`Patient reminded of driving impairment rules (s.5A RTA 1988)`,`Current prescription: ${currentRx}`,`Decision: ${verdict==='continue'?'Reauthorised unchanged':verdict==='conditional'?'Reauthorised with conditions':verdict==='caution'?'Held — specialist advice sought':'Not reauthorised — specialist referral made'}`,`Next review booked (3 months / 6–8 weeks if concerns)`,`Specialist review status: ${specRevTxt}`,`Prescriber: ${prescName} (${prescRole}) — ${revDate}`].forEach((d,i)=>{
+    html+=`<div class="doc-row"><input type="checkbox" id="bd${i}"><label for="bd${i}">${d}</label></div>`;
+  });
+  html+=`</div>`;
+  html+=`<div class="doc-block"><strong>Review summary for notes:</strong><br>Patient: ${ptName} &nbsp;·&nbsp; Date: ${revDate}<br>Prescription: ${currentRx}<br>Outcome scores recorded. ${allFlags.length} flag(s) identified at this review. Decision: <strong>${verdict==='continue'?'Reauthorised':verdict==='conditional'?'Reauthorised with conditions':verdict==='caution'?'Held — awaiting specialist advice':'Not reauthorised — specialist referral made'}</strong>. Prescriber: ${prescName} (${prescRole}).</div>`;
+  html+=`<div class="disclaimer">This tool supports but does not replace clinical judgement. If in any doubt, refer back to the initiating specialist. All prescribing decisions remain the clinical and legal responsibility of the prescriber. For shared care prescriber use only — not for patient distribution. Curaleaf Laboratories, MHRA No: MS 41467.</div>`;
+  document.getElementById('B-dec').innerHTML=html;
+}
+function resetB(){
+  bAE=[];bInt=[];
+  document.querySelectorAll('#page2 input,#page2 select,#page2 textarea').forEach(el=>{if(el.type==='checkbox')el.checked=false;else if(el.tagName==='SELECT')el.selectedIndex=0;else el.value='';});
+  document.querySelectorAll('#page2 .chip.on').forEach(c=>c.classList.remove('on'));
+  ['B-sa','B-ae','B-ma','B-ip'].forEach(id=>{const e=document.getElementById(id);if(e)e.innerHTML='';});
+  ['nrs','psqi','gad','phq','pgic','cudit'].forEach(t=>sc(t));
+  goB(1);
+}
+</script>
+</body>
+</html>
